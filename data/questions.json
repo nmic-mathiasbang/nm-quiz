@@ -5,7 +5,7 @@
       "questions": [
         { "value": 100, "question": "This planet is known as the Red Planet", "answer": "What is Mars?" },
         { "value": 200, "question": "This element has the chemical symbol 'O'", "answer": "What is Oxygen?" },
-        { "value": 300, "question": "This force keeps us on the ground", "answer": "What is Gravity?" },
+        { "value": 300, "question": "This force keeps us on the ground", "answer": "What is Gravity?", "isBonus": true },
         { "value": 400, "question": "This scientist developed the theory of relativity", "answer": "Who is Albert Einstein?" },
         { "value": 500, "question": "This is the powerhouse of the cell", "answer": "What is the Mitochondria?" }
       ]
@@ -36,7 +36,7 @@
         { "value": 100, "question": "This sport uses a shuttlecock", "answer": "What is Badminton?" },
         { "value": 200, "question": "This country won the first FIFA World Cup in 1930", "answer": "What is Uruguay?" },
         { "value": 300, "question": "This tennis tournament is played on grass courts", "answer": "What is Wimbledon?" },
-        { "value": 400, "question": "This basketball player is known as 'His Airness'", "answer": "Who is Michael Jordan?" },
+        { "value": 400, "question": "This basketball player is known as 'His Airness'", "answer": "Who is Michael Jordan?", "isBonus": true },
         { "value": 500, "question": "This is the only sport to have been played on the Moon", "answer": "What is Golf?" }
       ]
     },

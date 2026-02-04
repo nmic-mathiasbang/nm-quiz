@@ -68,29 +68,24 @@ export default function HostPage() {
       const newGameId = generateGameCode();
       const newHostId = generateTeamId();
       
-      // Prepare categories with 'used' and 'isBonus' properties
+      // Prepare categories - read isBonus from questions.json, add 'used' property
       const categories: Category[] = questionsData.categories.map(cat => ({
         ...cat,
-        questions: cat.questions.map(q => ({ ...q, used: false, isBonus: false }))
+        questions: cat.questions.map(q => ({ 
+          ...q, 
+          used: false, 
+          isBonus: (q as { isBonus?: boolean }).isBonus ?? false  // Read from JSON or default to false
+        }))
       }));
-
-      // Randomly select 2 questions to be bonus (Daily Double style)
-      const numCategories = categories.length;
-      const numQuestions = 5;
-      const bonusIndices = new Set<string>();
-      while (bonusIndices.size < 2) {
-        const catIdx = Math.floor(Math.random() * numCategories);
-        const qIdx = Math.floor(Math.random() * numQuestions);
-        bonusIndices.add(`${catIdx}-${qIdx}`);
-      }
-
-      // Mark selected questions as bonus
-      bonusIndices.forEach(key => {
-        const [catIdx, qIdx] = key.split('-').map(Number);
-        categories[catIdx].questions[qIdx].isBonus = true;
-      });
       
-      console.log("Bonus questions placed at:", Array.from(bonusIndices));
+      // Log which questions are marked as bonus
+      const bonusQuestions: string[] = [];
+      categories.forEach((cat, catIdx) => {
+        cat.questions.forEach((q, qIdx) => {
+          if (q.isBonus) bonusQuestions.push(`${cat.name} $${q.value}`);
+        });
+      });
+      console.log("Bonus questions:", bonusQuestions.length > 0 ? bonusQuestions : "None marked in questions.json");
 
       // Create game in Supabase
       const { error } = await supabase.from("games").insert({
