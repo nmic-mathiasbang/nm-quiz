@@ -1,5 +1,6 @@
 "use client";
 
+import { QRCodeSVG } from "qrcode.react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Props for the ConnectionInfo component
@@ -28,19 +29,24 @@ export function ConnectionInfo({ gameId }: ConnectionInfoProps) {
           </p>
         </div>
 
-        {/* URL for direct access */}
+        {/* QR Code for easy mobile scanning */}
         {gameUrl && (
-          <div>
-            <p className="text-sm text-gray-600 mb-1">Or share this link:</p>
-            <p className="text-sm font-mono text-gray-700 bg-white p-3 rounded-lg border border-gray-200 break-all">
-              {gameUrl}
-            </p>
+          <div className="flex flex-col items-center">
+            <p className="text-sm text-gray-600 mb-2">Scan to join:</p>
+            <div className="bg-white p-4 rounded-lg border border-gray-200">
+              <QRCodeSVG 
+                value={gameUrl} 
+                size={180}
+                level="M"
+                includeMargin={false}
+              />
+            </div>
           </div>
         )}
 
         {/* Instructions */}
-        <p className="text-sm text-gray-500">
-          Players can go to the website and enter the game code to join.
+        <p className="text-sm text-gray-500 text-center">
+          Players scan the QR code or enter the game code at the website.
         </p>
       </CardContent>
     </Card>
