@@ -13,7 +13,7 @@ interface QuestionModalProps {
   onRevealAnswer: () => void;
   onAwardPoints: (teamId: string, points: number) => void;
   onResetBuzzer: () => void;
-  onClose: (markAsUsed: boolean) => void;  // Updated to pass whether to mark question as used
+  onClose: (markAsUsed: boolean) => void;
 }
 
 // Full-screen modal that displays the current question
@@ -29,26 +29,51 @@ export function QuestionModal({
 }: QuestionModalProps) {
   if (!question) return null;
 
-  // Find the team that buzzed in
+  // For bonus questions, use stake amount; otherwise use question value
+  const pointValue = question.isBonus && question.stake ? question.stake : question.value;
+
+  // Find the team that buzzed in (for regular questions)
   const buzzedTeam = question.buzzedTeam 
     ? teams.find(t => t.id === question.buzzedTeam?.teamId)
     : null;
 
+  // For bonus questions, the staking team answers
+  const stakingTeam = question.isBonus && question.stakingTeamId
+    ? teams.find(t => t.id === question.stakingTeamId)
+    : null;
+
+  // The team that should answer (staking team for bonus, buzzed team otherwise)
+  const answeringTeam = stakingTeam || buzzedTeam;
+
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col">
+    <div className={`fixed inset-0 z-50 flex flex-col ${question.isBonus ? "bg-gradient-to-br from-yellow-50 to-orange-50" : "bg-white"}`}>
       {/* Header with value and close button */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
-        <div className="w-12" /> {/* Spacer for centering */}
-        <h2 className="text-4xl md:text-5xl font-bold text-black">
-          ${question.value}
-        </h2>
+      <div className={`flex items-center justify-between p-6 border-b ${question.isBonus ? "border-orange-200 bg-gradient-to-r from-yellow-400 to-orange-500" : "border-gray-200"}`}>
+        <div className="w-12" />
+        <div className="text-center">
+          {/* Bonus badge */}
+          {question.isBonus && (
+            <span className="inline-block bg-white text-orange-600 px-4 py-1 rounded-full text-sm font-bold mb-2">
+              BONUS QUESTION
+            </span>
+          )}
+          <h2 className={`text-4xl md:text-5xl font-bold ${question.isBonus ? "text-white" : "text-black"}`}>
+            {question.isBonus ? `Stake: $${question.stake}` : `$${question.value}`}
+          </h2>
+          {/* Show staking team for bonus questions */}
+          {question.isBonus && question.stakingTeamName && (
+            <p className="text-white/90 text-lg mt-1">
+              {question.stakingTeamName} is playing for the stake
+            </p>
+          )}
+        </div>
         {isHost && (
           <button
-            onClick={() => onClose(false)}  // Close without marking as used
-            className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+            onClick={() => onClose(false)}
+            className={`w-12 h-12 flex items-center justify-center rounded-full transition-colors ${question.isBonus ? "hover:bg-white/20" : "hover:bg-gray-100"}`}
             title="Close without marking as used"
           >
-            <X className="w-8 h-8 text-gray-500" />
+            <X className={`w-8 h-8 ${question.isBonus ? "text-white" : "text-gray-500"}`} />
           </button>
         )}
         {!isHost && <div className="w-12" />}
@@ -61,8 +86,8 @@ export function QuestionModal({
           {question.question}
         </p>
 
-        {/* Buzzed team indicator */}
-        {question.buzzedTeam && (
+        {/* Buzzed team indicator (regular questions) */}
+        {question.buzzedTeam && !question.isBonus && (
           <div className="mt-12 bg-red-100 border-4 border-red-500 rounded-2xl px-12 py-6 text-center animate-pulse">
             <p className="text-2xl md:text-3xl font-bold text-red-700">
               🔔 {question.buzzedTeam.teamName} buzzed in!
@@ -81,39 +106,58 @@ export function QuestionModal({
 
       {/* Host controls - bottom of screen */}
       {isHost && (
-        <div className="p-6 border-t border-gray-200 bg-gray-50">
+        <div className={`p-6 border-t ${question.isBonus ? "border-orange-200 bg-orange-50" : "border-gray-200 bg-gray-50"}`}>
           <div className="max-w-2xl mx-auto space-y-4">
             {/* Reveal answer button */}
             {!showAnswer && (
               <Button
                 onClick={onRevealAnswer}
-                className="w-full h-14 text-xl bg-gray-900 text-white hover:bg-gray-800"
+                className={`w-full h-14 text-xl ${question.isBonus ? "bg-orange-600 hover:bg-orange-700" : "bg-gray-900 hover:bg-gray-800"} text-white`}
               >
                 Reveal Answer
               </Button>
             )}
 
-            {/* Scoring controls (when a team has buzzed) */}
-            {buzzedTeam && (
+            {/* Scoring controls for bonus questions (staking team) */}
+            {question.isBonus && stakingTeam && (
               <div className="flex gap-3">
                 <Button
-                  onClick={() => onAwardPoints(buzzedTeam.id, question.value)}
+                  onClick={() => onAwardPoints(stakingTeam.id, pointValue)}
                   className="flex-1 h-14 text-xl bg-green-600 text-white hover:bg-green-700"
                 >
-                  Correct (+${question.value})
+                  Correct (+${pointValue})
                 </Button>
                 <Button
-                  onClick={() => onAwardPoints(buzzedTeam.id, -question.value)}
+                  onClick={() => onAwardPoints(stakingTeam.id, -pointValue)}
                   variant="destructive"
                   className="flex-1 h-14 text-xl"
                 >
-                  Wrong (-${question.value})
+                  Wrong (-${pointValue})
                 </Button>
               </div>
             )}
 
-            {/* Reset buzzer button */}
-            {question.buzzerLocked && (
+            {/* Scoring controls for regular questions (buzzed team) */}
+            {!question.isBonus && buzzedTeam && (
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => onAwardPoints(buzzedTeam.id, pointValue)}
+                  className="flex-1 h-14 text-xl bg-green-600 text-white hover:bg-green-700"
+                >
+                  Correct (+${pointValue})
+                </Button>
+                <Button
+                  onClick={() => onAwardPoints(buzzedTeam.id, -pointValue)}
+                  variant="destructive"
+                  className="flex-1 h-14 text-xl"
+                >
+                  Wrong (-${pointValue})
+                </Button>
+              </div>
+            )}
+
+            {/* Reset buzzer button - only for regular questions */}
+            {!question.isBonus && question.buzzerLocked && (
               <Button
                 onClick={onResetBuzzer}
                 variant="outline"
@@ -126,8 +170,8 @@ export function QuestionModal({
             {/* Close and mark as done - only if answer was revealed */}
             {showAnswer && (
               <Button
-                onClick={() => onClose(true)}  // Close and mark as used
-                className="w-full h-12 text-lg bg-blue-600 text-white hover:bg-blue-700"
+                onClick={() => onClose(true)}
+                className={`w-full h-12 text-lg ${question.isBonus ? "bg-orange-600 hover:bg-orange-700" : "bg-blue-600 hover:bg-blue-700"} text-white`}
               >
                 Done - Remove from Board
               </Button>

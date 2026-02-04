@@ -2,11 +2,12 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { supabase, generateGameCode, generateTeamId } from "@/lib/supabase";
-import type { Game, Team, ActiveQuestion, Category, BuzzEvent } from "@/lib/database.types";
+import type { Game, Team, ActiveQuestion, Category, BuzzEvent, Question } from "@/lib/database.types";
 import { GameBoard } from "@/components/game-board";
 import { Scoreboard } from "@/components/scoreboard";
 import { TeamList } from "@/components/team-list";
 import { QuestionModal } from "@/components/question-modal";
+import { StakingModal } from "@/components/staking-modal";
 import { HostControls } from "@/components/host-controls";
 import { ConnectionInfo } from "@/components/connection-info";
 import { playCorrectSound, playWrongSound } from "@/lib/sounds";
@@ -23,6 +24,14 @@ export default function HostPage() {
   const [showAnswer, setShowAnswer] = useState(false);
   const [buzzedTeamId, setBuzzedTeamId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Bonus question staking state
+  const [showStakingModal, setShowStakingModal] = useState(false);
+  const [pendingBonusQuestion, setPendingBonusQuestion] = useState<{
+    categoryIndex: number;
+    questionIndex: number;
+    question: Question;
+  } | null>(null);
 
   // Initialize game on mount - check for existing session first
   useEffect(() => {
@@ -59,11 +68,29 @@ export default function HostPage() {
       const newGameId = generateGameCode();
       const newHostId = generateTeamId();
       
-      // Prepare categories with 'used' property
+      // Prepare categories with 'used' and 'isBonus' properties
       const categories: Category[] = questionsData.categories.map(cat => ({
         ...cat,
-        questions: cat.questions.map(q => ({ ...q, used: false }))
+        questions: cat.questions.map(q => ({ ...q, used: false, isBonus: false }))
       }));
+
+      // Randomly select 2 questions to be bonus (Daily Double style)
+      const numCategories = categories.length;
+      const numQuestions = 5;
+      const bonusIndices = new Set<string>();
+      while (bonusIndices.size < 2) {
+        const catIdx = Math.floor(Math.random() * numCategories);
+        const qIdx = Math.floor(Math.random() * numQuestions);
+        bonusIndices.add(`${catIdx}-${qIdx}`);
+      }
+
+      // Mark selected questions as bonus
+      bonusIndices.forEach(key => {
+        const [catIdx, qIdx] = key.split('-').map(Number);
+        categories[catIdx].questions[qIdx].isBonus = true;
+      });
+      
+      console.log("Bonus questions placed at:", Array.from(bonusIndices));
 
       // Create game in Supabase
       const { error } = await supabase.from("games").insert({
@@ -199,6 +226,15 @@ export default function HostPage() {
       const question = category.questions[questionIndex];
       if (question.used) return;
 
+      // Check if this is a bonus question
+      if (question.isBonus) {
+        // Show staking modal instead of question
+        setPendingBonusQuestion({ categoryIndex, questionIndex, question });
+        setShowStakingModal(true);
+        return;
+      }
+
+      // Regular question - show directly
       const activeQuestion: ActiveQuestion = {
         categoryIndex,
         questionIndex,
@@ -207,6 +243,8 @@ export default function HostPage() {
         value: question.value,
         buzzedTeam: null,
         buzzerLocked: false,
+        isBonus: false,
+        stakeConfirmed: true,
       };
 
       // Clear previous buzzes for this question
@@ -223,6 +261,55 @@ export default function HostPage() {
     },
     [game, gameId]
   );
+
+  // Handle stake confirmation for bonus questions
+  const handleConfirmStake = useCallback(
+    async (teamId: string, stake: number) => {
+      if (!game || !gameId || !pendingBonusQuestion) return;
+
+      const team = teams.find(t => t.id === teamId);
+      if (!team) return;
+
+      const { categoryIndex, questionIndex, question } = pendingBonusQuestion;
+
+      // Create active question with staking info
+      const activeQuestion: ActiveQuestion = {
+        categoryIndex,
+        questionIndex,
+        question: question.question,
+        answer: question.answer,
+        value: question.value,
+        buzzedTeam: null,
+        buzzerLocked: true,  // Lock buzzer - only staking team can answer
+        isBonus: true,
+        stake,
+        stakingTeamId: teamId,
+        stakingTeamName: team.name,
+        stakeConfirmed: true,
+      };
+
+      // Clear previous buzzes
+      await supabase.from("buzzes").delete().eq("game_id", gameId);
+
+      await supabase
+        .from("games")
+        .update({ active_question: activeQuestion, show_answer: false })
+        .eq("id", gameId);
+
+      setGame((prev) => (prev ? { ...prev, active_question: activeQuestion } : prev));
+      setShowAnswer(false);
+      setBuzzedTeamId(null);
+      setShowStakingModal(false);
+      setPendingBonusQuestion(null);
+    },
+    [game, gameId, pendingBonusQuestion, teams]
+  );
+
+  // Cancel staking modal
+  const handleCancelStaking = useCallback(() => {
+    setShowStakingModal(false);
+    setPendingBonusQuestion(null);
+  }, []);
 
   const handleRevealAnswer = useCallback(async () => {
     if (!gameId) return;
@@ -399,6 +486,15 @@ export default function HostPage() {
         onAwardPoints={handleAwardPoints}
         onResetBuzzer={handleResetBuzzer}
         onClose={handleCloseQuestion}
+      />
+
+      {/* Staking modal for bonus questions */}
+      <StakingModal
+        isOpen={showStakingModal}
+        questionValue={pendingBonusQuestion?.question.value ?? 0}
+        teams={teams}
+        onConfirmStake={handleConfirmStake}
+        onCancel={handleCancelStaking}
       />
     </main>
   );

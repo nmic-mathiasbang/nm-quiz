@@ -6,6 +6,7 @@ export interface Question {
   question: string;
   answer: string;
   used: boolean;
+  isBonus?: boolean;  // Hidden bonus question (Daily Double style)
 }
 
 export interface Category {
@@ -21,6 +22,12 @@ export interface ActiveQuestion {
   value: number;
   buzzedTeam: BuzzEvent | null;
   buzzerLocked: boolean;
+  // Bonus question (Daily Double) fields
+  isBonus: boolean;
+  stake?: number;              // Amount staked (if bonus)
+  stakingTeamId?: string;      // Team that selected and is staking
+  stakingTeamName?: string;
+  stakeConfirmed: boolean;     // Whether stake has been set
 }
 
 export interface BuzzEvent {
