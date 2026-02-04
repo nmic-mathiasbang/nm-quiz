@@ -282,17 +282,18 @@ export default function HostPage() {
     );
   }
 
-  return (
-    <main className="min-h-screen bg-white p-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <header className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-black">Jeopardy!</h1>
-          <p className="text-gray-500 text-sm mt-1">Game: {gameId}</p>
-        </header>
+  // Pre-game lobby view
+  if (!game.is_started) {
+    return (
+      <main className="min-h-screen bg-white p-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Header - only in lobby */}
+          <header className="mb-6 text-center">
+            <h1 className="text-3xl font-bold text-black">Jeopardy!</h1>
+            <p className="text-gray-500 text-sm mt-1">Game: {gameId}</p>
+          </header>
 
-        {/* Pre-game: Show connection info and waiting for teams */}
-        {!game.is_started && (
+          {/* Pre-game: Show connection info and waiting for teams */}
           <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             <ConnectionInfo gameId={gameId!} />
             <div className="space-y-4">
@@ -305,43 +306,45 @@ export default function HostPage() {
               />
             </div>
           </div>
-        )}
+        </div>
+      </main>
+    );
+  }
 
-        {/* Game started: Show game board */}
-        {game.is_started && (
-          <div className="grid lg:grid-cols-[1fr_300px] gap-6">
-            {/* Game board */}
-            <GameBoard
-              categories={game.categories}
-              onSelectQuestion={handleSelectQuestion}
-              disabled={!!game.active_question}
-            />
-
-            {/* Sidebar */}
-            <div className="space-y-4">
-              <Scoreboard teams={teams} highlightTeamId={buzzedTeamId ?? undefined} />
-              <HostControls
-                teams={teams}
-                isGameStarted={game.is_started}
-                onStartGame={handleStartGame}
-                onAwardPoints={handleAwardPoints}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Question modal */}
-        <QuestionModal
-          question={game.active_question}
-          teams={teams}
-          showAnswer={showAnswer}
-          isHost={true}
-          onRevealAnswer={handleRevealAnswer}
-          onAwardPoints={handleAwardPoints}
-          onResetBuzzer={handleResetBuzzer}
-          onClose={handleCloseQuestion}
+  // Full-screen game view
+  return (
+    <main className="h-screen bg-white flex">
+      {/* Game board - full screen */}
+      <div className="flex-1 p-4">
+        <GameBoard
+          categories={game.categories}
+          onSelectQuestion={handleSelectQuestion}
+          disabled={!!game.active_question}
         />
       </div>
+
+      {/* Sidebar */}
+      <div className="w-80 p-4 border-l border-gray-200 flex flex-col gap-4 overflow-auto">
+        <Scoreboard teams={teams} highlightTeamId={buzzedTeamId ?? undefined} />
+        <HostControls
+          teams={teams}
+          isGameStarted={game.is_started}
+          onStartGame={handleStartGame}
+          onAwardPoints={handleAwardPoints}
+        />
+      </div>
+
+      {/* Question modal */}
+      <QuestionModal
+        question={game.active_question}
+        teams={teams}
+        showAnswer={showAnswer}
+        isHost={true}
+        onRevealAnswer={handleRevealAnswer}
+        onAwardPoints={handleAwardPoints}
+        onResetBuzzer={handleResetBuzzer}
+        onClose={handleCloseQuestion}
+      />
     </main>
   );
 }
