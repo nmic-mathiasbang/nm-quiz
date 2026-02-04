@@ -80,6 +80,8 @@ function JoinForm() {
         name: teamName.trim(),
         score: 0,
         connected: true,
+        sound_type: "buzzer",    // Default buzzer sound
+        custom_sound: null,
       });
 
       if (insertError) {

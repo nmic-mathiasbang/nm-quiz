@@ -3,9 +3,9 @@
 import { useEffect, useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import type { Game, Team, ActiveQuestion } from "@/lib/database.types";
+import type { Game, Team } from "@/lib/database.types";
 import { BuzzerButton } from "@/components/buzzer-button";
-import { playBuzzerSound } from "@/lib/sounds";
+import { SoundPicker } from "@/components/sound-picker";
 import { Card, CardContent } from "@/components/ui/card";
 
 // Inner component that uses useSearchParams
@@ -130,13 +130,30 @@ function PlayContent() {
     };
   }, [gameCode, teamId]);
 
-  // Handle buzz
+  // Handle sound selection change
+  const handleSoundChange = useCallback(async (soundType: string, customSound: string | null) => {
+    if (!teamId) return;
+
+    // Update team's sound preference in Supabase
+    await supabase
+      .from("teams")
+      .update({ 
+        sound_type: soundType, 
+        custom_sound: customSound 
+      })
+      .eq("id", teamId);
+
+    // Update local state
+    setTeam((prev) => prev ? { ...prev, sound_type: soundType, custom_sound: customSound } : prev);
+  }, [teamId]);
+
+  // Handle buzz (sound plays on host, not here)
   const handleBuzz = useCallback(async () => {
     if (!game || !game.active_question || hasBuzzed || game.active_question.buzzerLocked) {
       return;
     }
 
-    // Insert buzz record
+    // Insert buzz record - host will play the sound
     const { error } = await supabase.from("buzzes").insert({
       game_id: gameCode,
       team_id: teamId,
@@ -145,7 +162,6 @@ function PlayContent() {
     });
 
     if (!error) {
-      playBuzzerSound();
       setHasBuzzed(true);
     }
   }, [game, gameCode, teamId, teamName, hasBuzzed]);
@@ -185,17 +201,27 @@ function PlayContent() {
       </header>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col items-center justify-center p-4">
-        {/* Waiting for game to start */}
+      <div className="flex-1 flex flex-col items-center justify-center p-4 overflow-auto">
+        {/* Waiting for game to start - show sound picker */}
         {!game?.is_started && (
-          <Card className="w-full max-w-sm bg-gray-50 border-gray-200">
-            <CardContent className="py-8 text-center">
-              <div className="animate-pulse mb-4">
-                <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto" />
-              </div>
-              <p className="text-lg text-gray-600">Waiting for host to start the game...</p>
-            </CardContent>
-          </Card>
+          <div className="w-full max-w-md space-y-4">
+            <Card className="bg-gray-50 border-gray-200">
+              <CardContent className="py-6 text-center">
+                <div className="animate-pulse mb-3">
+                  <div className="w-12 h-12 bg-gray-300 rounded-full mx-auto" />
+                </div>
+                <p className="text-lg text-gray-600">Waiting for host to start...</p>
+                <p className="text-sm text-gray-400 mt-1">Customize your buzzer sound below!</p>
+              </CardContent>
+            </Card>
+            
+            {/* Sound picker */}
+            <SoundPicker
+              selectedSound={team?.sound_type || "buzzer"}
+              customSound={team?.custom_sound || null}
+              onSoundChange={handleSoundChange}
+            />
+          </div>
         )}
 
         {/* Game started but no active question */}

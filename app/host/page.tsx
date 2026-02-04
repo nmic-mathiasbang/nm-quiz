@@ -9,7 +9,8 @@ import { TeamList } from "@/components/team-list";
 import { QuestionModal } from "@/components/question-modal";
 import { HostControls } from "@/components/host-controls";
 import { ConnectionInfo } from "@/components/connection-info";
-import { playBuzzerSound, playCorrectSound, playWrongSound } from "@/lib/sounds";
+import { playCorrectSound, playWrongSound } from "@/lib/sounds";
+import { playTeamBuzzer } from "@/lib/buzzer-sounds";
 import questionsData from "@/data/questions.json";
 
 // Host page - displays game board and controls
@@ -103,10 +104,18 @@ export default function HostPage() {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "buzzes", filter: `game_id=eq.${gameId}` },
-        (payload) => {
+        async (payload) => {
           const buzz = payload.new as { team_id: string; team_name: string; timestamp: number };
           setBuzzedTeamId(buzz.team_id);
-          playBuzzerSound();
+          
+          // Find the team that buzzed and play their custom sound
+          setTeams((currentTeams) => {
+            const buzzedTeam = currentTeams.find((t) => t.id === buzz.team_id);
+            if (buzzedTeam) {
+              playTeamBuzzer(buzzedTeam);
+            }
+            return currentTeams;
+          });
           
           // Update active question with buzz info
           setGame((prev) => {
