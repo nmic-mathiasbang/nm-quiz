@@ -15,6 +15,13 @@ export function ConnectionInfo({ gameId }: ConnectionInfoProps) {
     ? `${window.location.origin}/join?code=${gameId}`
     : "";
 
+  // Copy link to clipboard
+  const copyLink = () => {
+    if (gameUrl) {
+      navigator.clipboard.writeText(gameUrl);
+    }
+  };
+
   return (
     <Card className="bg-gray-50 border-gray-200">
       <CardHeader className="pb-3">
@@ -41,6 +48,21 @@ export function ConnectionInfo({ gameId }: ConnectionInfoProps) {
                 includeMargin={false}
               />
             </div>
+          </div>
+        )}
+
+        {/* Share link for desktop users */}
+        {gameUrl && (
+          <div>
+            <p className="text-sm text-gray-600 mb-1">Or share this link:</p>
+            <button
+              onClick={copyLink}
+              className="w-full text-left text-sm font-mono text-blue-600 hover:text-blue-800 bg-white p-3 rounded-lg border border-gray-200 break-all hover:bg-gray-50 transition-colors"
+              title="Click to copy"
+            >
+              {gameUrl}
+            </button>
+            <p className="text-xs text-gray-400 mt-1 text-center">Click to copy</p>
           </div>
         )}
 
