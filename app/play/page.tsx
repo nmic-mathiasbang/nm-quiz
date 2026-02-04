@@ -77,46 +77,45 @@ function PlayContent() {
 
     loadData();
 
-    // Subscribe to game updates
+    // Subscribe to game updates with status handling
     const channel = supabase
-      .channel(`play:${gameCode}`)
+      .channel(`play:${gameCode}:${teamId}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "games", filter: `id=eq.${gameCode}` },
+        { event: "UPDATE", schema: "public", table: "games", filter: `id=eq.${gameCode}` },
         (payload) => {
-          if (payload.eventType === "UPDATE") {
-            const newGame = payload.new as Game;
-            setGame(newGame);
+          console.log("Game update received:", payload);
+          const newGame = payload.new as Game;
+          setGame(newGame);
 
-            // Reset buzz state when question changes or buzzer is reset
-            if (!newGame.active_question) {
-              setHasBuzzed(false);
-              setBuzzedTeamName(null);
-            } else if (!newGame.active_question.buzzerLocked) {
-              setHasBuzzed(false);
-              setBuzzedTeamName(null);
-            } else if (newGame.active_question.buzzedTeam) {
-              setBuzzedTeamName(newGame.active_question.buzzedTeam.teamName);
-              if (newGame.active_question.buzzedTeam.teamId === teamId) {
-                setHasBuzzed(true);
-              }
+          // Reset buzz state when question changes or buzzer is reset
+          if (!newGame.active_question) {
+            setHasBuzzed(false);
+            setBuzzedTeamName(null);
+          } else if (!newGame.active_question.buzzerLocked) {
+            setHasBuzzed(false);
+            setBuzzedTeamName(null);
+          } else if (newGame.active_question.buzzedTeam) {
+            setBuzzedTeamName(newGame.active_question.buzzedTeam.teamName);
+            if (newGame.active_question.buzzedTeam.teamId === teamId) {
+              setHasBuzzed(true);
             }
           }
         }
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "teams", filter: `id=eq.${teamId}` },
+        { event: "UPDATE", schema: "public", table: "teams", filter: `id=eq.${teamId}` },
         (payload) => {
-          if (payload.eventType === "UPDATE") {
-            setTeam(payload.new as Team);
-          }
+          console.log("Team update received:", payload);
+          setTeam(payload.new as Team);
         }
       )
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "buzzes", filter: `game_id=eq.${gameCode}` },
         (payload) => {
+          console.log("Buzz received:", payload);
           const buzz = payload.new as { team_id: string; team_name: string };
           setBuzzedTeamName(buzz.team_name);
           if (buzz.team_id === teamId) {
@@ -124,10 +123,39 @@ function PlayContent() {
           }
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log("Subscription status:", status, err);
+        if (status === "SUBSCRIBED") {
+          console.log("Successfully subscribed to realtime updates");
+        }
+        if (err) {
+          console.error("Subscription error:", err);
+        }
+      });
+
+    // Fallback polling every 3 seconds in case realtime fails
+    const pollInterval = setInterval(async () => {
+      const { data: gameData } = await supabase
+        .from("games")
+        .select("*")
+        .eq("id", gameCode)
+        .single();
+      
+      if (gameData) {
+        setGame((prevGame) => {
+          // Only update if something changed
+          if (JSON.stringify(prevGame) !== JSON.stringify(gameData)) {
+            console.log("Poll detected game change");
+            return gameData as Game;
+          }
+          return prevGame;
+        });
+      }
+    }, 3000);
 
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(pollInterval);
     };
   }, [gameCode, teamId]);
 
