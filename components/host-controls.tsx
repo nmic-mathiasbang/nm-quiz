@@ -29,11 +29,11 @@ export function HostControls({
         {!isGameStarted && (
           <Button
             onClick={onStartGame}
-            disabled={teams.length < 2}
+            disabled={teams.length < 1}
             className="w-full bg-black text-white hover:bg-gray-800"
           >
-            {teams.length < 2 
-              ? `Need ${2 - teams.length} more team(s)` 
+            {teams.length < 1 
+              ? 'Waiting for teams...' 
               : 'Start Game'
             }
           </Button>
