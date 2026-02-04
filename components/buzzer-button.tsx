@@ -29,19 +29,19 @@ export function BuzzerButton({ onBuzz, disabled, hasBuzzed, isLocked }: BuzzerBu
   const getButtonState = () => {
     if (hasBuzzed) {
       return {
-        text: "BUZZED!",
+        text: "BUZZEDE!",
         className: "bg-green-600 border-green-700 cursor-not-allowed",
       };
     }
     if (isLocked) {
       return {
-        text: "LOCKED",
+        text: "LÅST",
         className: "bg-gray-400 border-gray-500 cursor-not-allowed",
       };
     }
     if (disabled) {
       return {
-        text: "WAIT",
+        text: "VENT",
         className: "bg-gray-300 border-gray-400 cursor-not-allowed",
       };
     }

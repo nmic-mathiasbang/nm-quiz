@@ -82,10 +82,10 @@ export default function HostPage() {
       const bonusQuestions: string[] = [];
       categories.forEach((cat, catIdx) => {
         cat.questions.forEach((q, qIdx) => {
-          if (q.isBonus) bonusQuestions.push(`${cat.name} $${q.value}`);
+          if (q.isBonus) bonusQuestions.push(`${cat.name} ${q.value} kr.`);
         });
       });
-      console.log("Bonus questions:", bonusQuestions.length > 0 ? bonusQuestions : "None marked in questions.json");
+      console.log("Bonus spørgsmål:", bonusQuestions.length > 0 ? bonusQuestions : "Ingen markeret i questions.json");
 
       // Create game in Supabase
       const { error } = await supabase.from("games").insert({
@@ -411,7 +411,7 @@ export default function HostPage() {
       <main className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-12 h-12 border-4 border-gray-300 border-t-black rounded-full mx-auto mb-4" />
-          <p className="text-gray-600">Creating game...</p>
+          <p className="text-gray-600">Opretter spil...</p>
         </div>
       </main>
     );
@@ -425,7 +425,7 @@ export default function HostPage() {
           {/* Header - only in lobby */}
           <header className="mb-6 text-center">
             <h1 className="text-3xl font-bold text-black">Jeopardy!</h1>
-            <p className="text-gray-500 text-sm mt-1">Game: {gameId}</p>
+            <p className="text-gray-500 text-sm mt-1">Spil: {gameId}</p>
           </header>
 
           {/* Pre-game: Show connection info and waiting for teams */}

@@ -19,17 +19,17 @@ export function TeamList({ teams, showReadyStatus = false }: TeamListProps) {
     <Card className="bg-white border-gray-200">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-bold text-black flex items-center justify-between">
-          <span>Teams ({teams.length})</span>
+          <span>Hold ({teams.length})</span>
           {showReadyStatus && teams.length > 0 && (
             <span className={`text-sm font-normal ${allReady ? "text-green-600" : "text-gray-500"}`}>
-              {readyCount}/{teams.length} ready
+              {readyCount}/{teams.length} klar
             </span>
           )}
         </CardTitle>
       </CardHeader>
       <CardContent>
         {teams.length === 0 ? (
-          <p className="text-gray-500 text-sm">Waiting for teams to join...</p>
+          <p className="text-gray-500 text-sm">Venter på hold der deltager...</p>
         ) : (
           <div className="space-y-2">
             {teams.map((team) => (
@@ -74,7 +74,7 @@ export function TeamList({ teams, showReadyStatus = false }: TeamListProps) {
                         : "bg-gray-100 text-gray-500"
                     }
                   >
-                    {team.ready ? "Ready" : "Picking sound..."}
+                    {team.ready ? "Klar" : "Vælger lyd..."}
                   </Badge>
                 )}
               </div>

@@ -37,17 +37,17 @@ export function StakingModal({
   // Handle stake confirmation
   const handleConfirm = () => {
     if (!selectedTeamId) {
-      setError("Please select a team");
+      setError("Vælg venligst et hold");
       return;
     }
 
     const stake = parseInt(stakeAmount, 10);
     if (isNaN(stake) || stake < minStake) {
-      setError(`Minimum stake is $${minStake}`);
+      setError(`Minimum indsats er ${minStake} kr.`);
       return;
     }
     if (stake > maxStake) {
-      setError(`Maximum stake is $${maxStake}`);
+      setError(`Maksimum indsats er ${maxStake} kr.`);
       return;
     }
 
@@ -68,14 +68,14 @@ export function StakingModal({
           BONUS!
         </h1>
         <p className="text-2xl md:text-3xl text-white/90">
-          Daily Double - ${questionValue} Question
+          Daily Double - {questionValue} kr. Spørgsmål
         </p>
       </div>
 
       {/* Team selection */}
       <div className="bg-white rounded-2xl p-8 max-w-xl w-full shadow-2xl">
         <h2 className="text-2xl font-bold text-black mb-6 text-center">
-          Select Team & Stake
+          Vælg Hold & Indsats
         </h2>
 
         {/* Team buttons */}
@@ -94,7 +94,7 @@ export function StakingModal({
               }`}
             >
               <p className="font-bold text-black">{team.name}</p>
-              <p className="text-gray-600">${team.score}</p>
+              <p className="text-gray-600">{team.score} kr.</p>
             </button>
           ))}
         </div>
@@ -104,7 +104,7 @@ export function StakingModal({
           <>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Stake Amount (Max: ${maxStake})
+                Indsats Beløb (Maks: {maxStake} kr.)
               </label>
               <Input
                 type="number"
@@ -113,7 +113,7 @@ export function StakingModal({
                   setStakeAmount(e.target.value);
                   setError(null);
                 }}
-                placeholder={`Enter stake (${minStake}-${maxStake})`}
+                placeholder={`Indtast indsats (${minStake}-${maxStake})`}
                 className="text-xl h-14 text-center font-bold"
                 min={minStake}
                 max={maxStake}
@@ -134,7 +134,7 @@ export function StakingModal({
                     stakeAmount === stake.toString() ? "border-orange-500 bg-orange-50" : ""
                   }`}
                 >
-                  {stake === selectedTeam?.score && stake > 500 ? "ALL IN" : `$${stake}`}
+                  {stake === selectedTeam?.score && stake > 500 ? "ALT IND" : `${stake} kr.`}
                 </Button>
               ))}
             </div>
@@ -153,14 +153,14 @@ export function StakingModal({
             onClick={onCancel}
             className="flex-1 h-12"
           >
-            Cancel
+            Annuller
           </Button>
           <Button
             onClick={handleConfirm}
             disabled={!selectedTeamId || !stakeAmount}
             className="flex-1 h-12 bg-orange-600 hover:bg-orange-700 text-white"
           >
-            Confirm Stake
+            Bekræft Indsats
           </Button>
         </div>
       </div>

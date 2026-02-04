@@ -28,15 +28,15 @@ export function HostControls({
   // Determine button state and message
   const getStartButtonState = () => {
     if (teams.length < 1) {
-      return { disabled: true, message: "Waiting for teams..." };
+      return { disabled: true, message: "Venter på hold..." };
     }
     if (!allTeamsReady) {
       return { 
         disabled: true, 
-        message: `Waiting for ${teams.length - readyCount} team${teams.length - readyCount !== 1 ? "s" : ""} to ready up` 
+        message: `Venter på ${teams.length - readyCount} hold at blive klar` 
       };
     }
-    return { disabled: false, message: "Start Game" };
+    return { disabled: false, message: "Start Spil" };
   };
 
   const buttonState = getStartButtonState();
@@ -44,7 +44,7 @@ export function HostControls({
   return (
     <Card className="bg-white border-gray-200">
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-bold text-black">Host Controls</CardTitle>
+        <CardTitle className="text-lg font-bold text-black">Vært Kontrol</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Start game button */}
@@ -65,7 +65,7 @@ export function HostControls({
         {/* Manual score adjustment */}
         {isGameStarted && teams.length > 0 && (
           <div className="space-y-3">
-            <p className="text-sm text-gray-600">Manual Score Adjustment:</p>
+            <p className="text-sm text-gray-600">Manuel Pointjustering:</p>
             {teams.map((team) => (
               <div key={team.id} className="flex items-center gap-2">
                 <span className="flex-1 text-sm font-medium text-black truncate">
@@ -99,7 +99,7 @@ export function HostControls({
             variant="outline"
             className="w-full border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
           >
-            End Game
+            Afslut Spil
           </Button>
         )}
       </CardContent>

@@ -25,12 +25,12 @@ export function ConnectionInfo({ gameId }: ConnectionInfoProps) {
   return (
     <Card className="bg-gray-50 border-gray-200">
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-bold text-black">Join the Game</CardTitle>
+        <CardTitle className="text-lg font-bold text-black">Deltag i Spillet</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Game code - big and prominent */}
         <div>
-          <p className="text-sm text-gray-600 mb-1">Game Code:</p>
+          <p className="text-sm text-gray-600 mb-1">Spilkode:</p>
           <p className="text-4xl font-mono font-bold text-black tracking-widest bg-white p-4 rounded-lg border border-gray-200 text-center">
             {gameId}
           </p>
@@ -39,7 +39,7 @@ export function ConnectionInfo({ gameId }: ConnectionInfoProps) {
         {/* QR Code for easy mobile scanning */}
         {gameUrl && (
           <div className="flex flex-col items-center">
-            <p className="text-sm text-gray-600 mb-2">Scan to join:</p>
+            <p className="text-sm text-gray-600 mb-2">Scan for at deltage:</p>
             <div className="bg-white p-4 rounded-lg border border-gray-200">
               <QRCodeSVG 
                 value={gameUrl} 
@@ -54,7 +54,7 @@ export function ConnectionInfo({ gameId }: ConnectionInfoProps) {
         {/* Share link for desktop users */}
         {gameUrl && (
           <div>
-            <p className="text-sm text-gray-600 mb-1">Or share this link:</p>
+            <p className="text-sm text-gray-600 mb-1">Eller del dette link:</p>
             <button
               onClick={copyLink}
               className="w-full text-left text-sm font-mono text-blue-600 hover:text-blue-800 bg-white p-3 rounded-lg border border-gray-200 break-all hover:bg-gray-50 transition-colors"
@@ -62,13 +62,13 @@ export function ConnectionInfo({ gameId }: ConnectionInfoProps) {
             >
               {gameUrl}
             </button>
-            <p className="text-xs text-gray-400 mt-1 text-center">Click to copy</p>
+            <p className="text-xs text-gray-400 mt-1 text-center">Klik for at kopiere</p>
           </div>
         )}
 
         {/* Instructions */}
         <p className="text-sm text-gray-500 text-center">
-          Players scan the QR code or enter the game code at the website.
+          Spillere scanner QR-koden eller indtaster spilkoden på hjemmesiden.
         </p>
       </CardContent>
     </Card>

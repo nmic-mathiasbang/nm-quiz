@@ -17,7 +17,7 @@ export default function HomePage() {
     e.preventDefault();
     
     if (!gameCode.trim()) {
-      setError("Please enter a game code");
+      setError("Indtast venligst en spilkode");
       return;
     }
 
@@ -31,7 +31,7 @@ export default function HomePage() {
         <CardHeader className="text-center">
           <CardTitle className="text-4xl font-bold text-black">Jeopardy!</CardTitle>
           <CardDescription className="text-gray-600">
-            A real-time quiz game for teams
+            Et realtids quiz spil for hold
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -40,7 +40,7 @@ export default function HomePage() {
             onClick={() => router.push("/host")}
             className="w-full h-16 text-lg bg-black text-white hover:bg-gray-800"
           >
-            Host a Game
+            Vært et Spil
           </Button>
 
           {/* Divider */}
@@ -49,7 +49,7 @@ export default function HomePage() {
               <span className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500">Or join a game</span>
+              <span className="bg-white px-2 text-gray-500">Eller deltag i et spil</span>
             </div>
           </div>
 
@@ -57,7 +57,7 @@ export default function HomePage() {
           <form onSubmit={handleJoinWithCode} className="space-y-3">
             <Input
               type="text"
-              placeholder="Enter Game Code"
+              placeholder="Indtast Spilkode"
               value={gameCode}
               onChange={(e) => {
                 setGameCode(e.target.value.toUpperCase());
@@ -76,17 +76,17 @@ export default function HomePage() {
               variant="outline"
               className="w-full h-14 text-lg border-gray-300 text-black hover:bg-gray-100"
             >
-              Join Game
+              Deltag i Spil
             </Button>
           </form>
 
           {/* Instructions */}
           <div className="pt-2 text-center text-sm text-gray-500">
             <p className="mb-2">
-              <strong>Host:</strong> Display the game board on a large screen
+              <strong>Vært:</strong> Vis spilbrættet på en stor skærm
             </p>
             <p>
-              <strong>Team:</strong> Enter the code shown on the host&apos;s screen
+              <strong>Hold:</strong> Indtast koden vist på værtens skærm
             </p>
           </div>
         </CardContent>

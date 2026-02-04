@@ -217,7 +217,7 @@ function PlayContent() {
       <main className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-12 h-12 border-4 border-gray-300 border-t-black rounded-full mx-auto mb-4" />
-          <p className="text-gray-600">Connecting...</p>
+          <p className="text-gray-600">Forbinder...</p>
         </div>
       </main>
     );
@@ -234,12 +234,12 @@ function PlayContent() {
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <div>
             <h1 className="text-xl font-bold text-black">{teamName}</h1>
-            <p className="text-sm text-gray-500">Game: {gameCode}</p>
+            <p className="text-sm text-gray-500">Spil: {gameCode}</p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-gray-500">Score</p>
+            <p className="text-sm text-gray-500">Point</p>
             <p className={`text-2xl font-bold ${(team?.score ?? 0) < 0 ? "text-red-600" : "text-black"}`}>
-              ${team?.score ?? 0}
+              {team?.score ?? 0} kr.
             </p>
           </div>
         </div>
@@ -258,16 +258,16 @@ function PlayContent() {
                     <div className="w-16 h-16 bg-green-500 rounded-full mx-auto flex items-center justify-center">
                       <span className="text-3xl text-white">✓</span>
                     </div>
-                    <p className="text-lg font-bold text-green-700">You&apos;re Ready!</p>
-                    <p className="text-sm text-green-600">Waiting for host to start the game...</p>
+                    <p className="text-lg font-bold text-green-700">Du er klar!</p>
+                    <p className="text-sm text-green-600">Venter på at vært starter spillet...</p>
                   </>
                 ) : (
                   <>
                     <div className="animate-pulse mb-2">
                       <div className="w-12 h-12 bg-gray-300 rounded-full mx-auto" />
                     </div>
-                    <p className="text-lg text-gray-600">Customize your buzzer sound below</p>
-                    <p className="text-sm text-gray-400">Then click Ready when you&apos;re set!</p>
+                    <p className="text-lg text-gray-600">Tilpas din buzzer lyd nedenfor</p>
+                    <p className="text-sm text-gray-400">Klik derefter på Klar når du er klar!</p>
                   </>
                 )}
                 
@@ -280,7 +280,7 @@ function PlayContent() {
                       : "bg-green-600 hover:bg-green-700 text-white"
                   }`}
                 >
-                  {team?.ready ? "Cancel Ready" : "I'm Ready!"}
+                  {team?.ready ? "Annuller Klar" : "Jeg er klar!"}
                 </Button>
               </CardContent>
             </Card>
@@ -300,8 +300,8 @@ function PlayContent() {
         {game?.is_started && !game?.active_question && (
           <Card className="w-full max-w-sm bg-gray-50 border-gray-200">
             <CardContent className="py-8 text-center">
-              <p className="text-lg text-gray-600">Waiting for next question...</p>
-              <p className="text-sm text-gray-400 mt-2">Get ready to buzz!</p>
+              <p className="text-lg text-gray-600">Venter på næste spørgsmål...</p>
+              <p className="text-sm text-gray-400 mt-2">Gør dig klar til at buzze!</p>
             </CardContent>
           </Card>
         )}
@@ -311,8 +311,8 @@ function PlayContent() {
           <div className="flex flex-col items-center space-y-6">
             {/* Question value */}
             <div className="text-center">
-              <p className="text-sm text-gray-500">Question for</p>
-              <p className="text-3xl font-bold text-black">${game.active_question.value}</p>
+              <p className="text-sm text-gray-500">Spørgsmål for</p>
+              <p className="text-3xl font-bold text-black">{game.active_question.value} kr.</p>
             </div>
 
             {/* Buzzer button */}
@@ -326,12 +326,12 @@ function PlayContent() {
             {/* Status message */}
             {buzzedTeamName && !hasBuzzed && (
               <p className="text-lg text-gray-600">
-                <span className="font-bold">{buzzedTeamName}</span> buzzed first!
+                <span className="font-bold">{buzzedTeamName}</span> buzzede først!
               </p>
             )}
             {hasBuzzed && (
               <p className="text-lg text-green-600 font-bold">
-                You buzzed! Answer the question!
+                Du buzzede! Besvar spørgsmålet!
               </p>
             )}
           </div>
@@ -340,7 +340,7 @@ function PlayContent() {
 
       {/* Footer */}
       <footer className="p-4 border-t border-gray-200 text-center">
-        <p className="text-xs text-gray-400">Jeopardy! Quiz Game</p>
+        <p className="text-xs text-gray-400">Jeopardy! Quiz Spil</p>
       </footer>
     </main>
   );

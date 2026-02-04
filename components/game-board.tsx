@@ -51,7 +51,7 @@ export function GameBoard({ categories, onSelectQuestion, disabled }: GameBoardP
                   ${disabled && !isUsed ? 'opacity-50 cursor-not-allowed' : ''}
                 `}
               >
-                {isUsed ? '' : `$${value}`}
+                {isUsed ? '' : `${value} kr.`}
               </button>
             );
           })

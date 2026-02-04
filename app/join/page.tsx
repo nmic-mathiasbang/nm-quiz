@@ -25,17 +25,17 @@ function JoinForm() {
 
     // Validate inputs
     if (!gameCode.trim()) {
-      setError("Please enter a game code");
+      setError("Indtast venligst en spilkode");
       return;
     }
 
     if (!teamName.trim()) {
-      setError("Please enter a team name");
+      setError("Indtast venligst et holdnavn");
       return;
     }
 
     if (teamName.length > 20) {
-      setError("Team name must be 20 characters or less");
+      setError("Holdnavn må maksimalt være 20 tegn");
       return;
     }
 
@@ -52,7 +52,7 @@ function JoinForm() {
         .single();
 
       if (gameError || !game) {
-        setError("Game not found. Check your game code.");
+        setError("Spil ikke fundet. Tjek din spilkode.");
         setIsJoining(false);
         return;
       }
@@ -66,7 +66,7 @@ function JoinForm() {
         .single();
 
       if (existingTeam) {
-        setError("Team name already taken. Choose another name.");
+        setError("Holdnavn er allerede taget. Vælg et andet navn.");
         setIsJoining(false);
         return;
       }
@@ -86,7 +86,7 @@ function JoinForm() {
       });
 
       if (insertError) {
-        setError("Failed to join game. Please try again.");
+        setError("Kunne ikke deltage i spil. Prøv venligst igen.");
         setIsJoining(false);
         return;
       }
@@ -100,7 +100,7 @@ function JoinForm() {
       router.push(`/play?code=${code}`);
     } catch (err) {
       console.error("Join error:", err);
-      setError("Something went wrong. Please try again.");
+      setError("Noget gik galt. Prøv venligst igen.");
       setIsJoining(false);
     }
   };
@@ -108,9 +108,9 @@ function JoinForm() {
   return (
     <Card className="w-full max-w-md bg-white border-gray-200">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold text-black">Join Game</CardTitle>
+        <CardTitle className="text-3xl font-bold text-black">Deltag i Spil</CardTitle>
         <CardDescription className="text-gray-600">
-          Enter the game code and your team name
+          Indtast spilkoden og dit holdnavn
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -119,7 +119,7 @@ function JoinForm() {
           {/* Game code input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Game Code
+              Spilkode
             </label>
             <Input
               type="text"
@@ -135,11 +135,11 @@ function JoinForm() {
           {/* Team name input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Team Name
+              Holdnavn
             </label>
             <Input
               type="text"
-              placeholder="Team Name"
+              placeholder="Holdnavn"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
               disabled={isJoining}
@@ -162,7 +162,7 @@ function JoinForm() {
             disabled={isJoining || !teamName.trim() || !gameCode.trim()}
             className="w-full h-14 text-lg bg-black text-white hover:bg-gray-800"
           >
-            {isJoining ? "Joining..." : "Join Game"}
+            {isJoining ? "Deltager..." : "Deltag i Spil"}
           </Button>
         </form>
 
@@ -172,7 +172,7 @@ function JoinForm() {
             onClick={() => router.push("/")}
             className="text-gray-500 hover:text-black text-sm underline"
           >
-            Back to Home
+            Tilbage til Start
           </button>
         </div>
       </CardContent>

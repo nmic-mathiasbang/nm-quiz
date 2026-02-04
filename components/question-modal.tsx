@@ -54,16 +54,16 @@ export function QuestionModal({
           {/* Bonus badge */}
           {question.isBonus && (
             <span className="inline-block bg-white text-orange-600 px-4 py-1 rounded-full text-sm font-bold mb-2">
-              BONUS QUESTION
+              BONUS SPØRGSMÅL
             </span>
           )}
           <h2 className={`text-4xl md:text-5xl font-bold ${question.isBonus ? "text-white" : "text-black"}`}>
-            {question.isBonus ? `Stake: $${question.stake}` : `$${question.value}`}
+            {question.isBonus ? `Indsats: ${question.stake} kr.` : `${question.value} kr.`}
           </h2>
           {/* Show staking team for bonus questions */}
           {question.isBonus && question.stakingTeamName && (
             <p className="text-white/90 text-lg mt-1">
-              {question.stakingTeamName} is playing for the stake
+              {question.stakingTeamName} spiller for indsatsen
             </p>
           )}
         </div>
@@ -90,7 +90,7 @@ export function QuestionModal({
         {question.buzzedTeam && !question.isBonus && (
           <div className="mt-12 bg-red-100 border-4 border-red-500 rounded-2xl px-12 py-6 text-center animate-pulse">
             <p className="text-2xl md:text-3xl font-bold text-red-700">
-              🔔 {question.buzzedTeam.teamName} buzzed in!
+              🔔 {question.buzzedTeam.teamName} buzzede ind!
             </p>
           </div>
         )}
@@ -98,7 +98,7 @@ export function QuestionModal({
         {/* Answer section */}
         {showAnswer && (
           <div className="mt-12 bg-green-50 border-4 border-green-500 rounded-2xl px-12 py-6 text-center">
-            <p className="text-lg text-green-600 mb-2">Answer:</p>
+            <p className="text-lg text-green-600 mb-2">Svar:</p>
             <p className="text-3xl md:text-4xl font-bold text-green-800">{question.answer}</p>
           </div>
         )}
@@ -114,7 +114,7 @@ export function QuestionModal({
                 onClick={onRevealAnswer}
                 className={`w-full h-14 text-xl ${question.isBonus ? "bg-orange-600 hover:bg-orange-700" : "bg-gray-900 hover:bg-gray-800"} text-white`}
               >
-                Reveal Answer
+                Vis Svar
               </Button>
             )}
 
@@ -125,14 +125,14 @@ export function QuestionModal({
                   onClick={() => onAwardPoints(stakingTeam.id, pointValue)}
                   className="flex-1 h-14 text-xl bg-green-600 text-white hover:bg-green-700"
                 >
-                  Correct (+${pointValue})
+                  Korrekt (+{pointValue} kr.)
                 </Button>
                 <Button
                   onClick={() => onAwardPoints(stakingTeam.id, -pointValue)}
                   variant="destructive"
                   className="flex-1 h-14 text-xl"
                 >
-                  Wrong (-${pointValue})
+                  Forkert (-{pointValue} kr.)
                 </Button>
               </div>
             )}
@@ -144,14 +144,14 @@ export function QuestionModal({
                   onClick={() => onAwardPoints(buzzedTeam.id, pointValue)}
                   className="flex-1 h-14 text-xl bg-green-600 text-white hover:bg-green-700"
                 >
-                  Correct (+${pointValue})
+                  Korrekt (+{pointValue} kr.)
                 </Button>
                 <Button
                   onClick={() => onAwardPoints(buzzedTeam.id, -pointValue)}
                   variant="destructive"
                   className="flex-1 h-14 text-xl"
                 >
-                  Wrong (-${pointValue})
+                  Forkert (-{pointValue} kr.)
                 </Button>
               </div>
             )}
@@ -163,7 +163,7 @@ export function QuestionModal({
                 variant="outline"
                 className="w-full h-12 text-lg border-gray-300 text-black hover:bg-gray-100"
               >
-                Reset Buzzer (Let Another Team Try)
+                Nulstil Buzzer (Lad et andet hold prøve)
               </Button>
             )}
 
@@ -173,7 +173,7 @@ export function QuestionModal({
                 onClick={() => onClose(true)}
                 className={`w-full h-12 text-lg ${question.isBonus ? "bg-orange-600 hover:bg-orange-700" : "bg-blue-600 hover:bg-blue-700"} text-white`}
               >
-                Done - Remove from Board
+                Færdig - Fjern fra Bræt
               </Button>
             )}
           </div>

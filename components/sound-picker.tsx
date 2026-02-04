@@ -104,7 +104,7 @@ export function SoundPicker({ selectedSound, customSound, onSoundChange }: Sound
 
     } catch (error) {
       console.error("Failed to start recording:", error);
-      setRecordingError("Could not access microphone. Please allow microphone access.");
+      setRecordingError("Kunne ikke få adgang til mikrofon. Tillad venligst mikrofonadgang.");
     }
   };
 
@@ -136,12 +136,12 @@ export function SoundPicker({ selectedSound, customSound, onSoundChange }: Sound
   return (
     <Card className="bg-white border-gray-200">
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-bold text-black">Choose Your Buzzer Sound</CardTitle>
+        <CardTitle className="text-lg font-bold text-black">Vælg Din Buzzer Lyd</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Classic sounds */}
         <div>
-          <p className="text-sm text-gray-600 mb-2">Classic</p>
+          <p className="text-sm text-gray-600 mb-2">Klassisk</p>
           <div className="grid grid-cols-4 gap-2">
             {classicSounds.map(([key, sound]) => (
               <button
@@ -165,7 +165,7 @@ export function SoundPicker({ selectedSound, customSound, onSoundChange }: Sound
 
         {/* Fun sounds */}
         <div>
-          <p className="text-sm text-gray-600 mb-2">Fun</p>
+          <p className="text-sm text-gray-600 mb-2">Sjov</p>
           <div className="grid grid-cols-4 gap-2">
             {funSounds.map(([key, sound]) => (
               <button
@@ -189,7 +189,7 @@ export function SoundPicker({ selectedSound, customSound, onSoundChange }: Sound
 
         {/* Custom recording section */}
         <div className="pt-2 border-t border-gray-200">
-          <p className="text-sm text-gray-600 mb-2">Record Your Own (2 seconds max)</p>
+          <p className="text-sm text-gray-600 mb-2">Optag Din Egen (maks 2 sekunder)</p>
           
           {/* Recording button */}
           {!isRecording ? (
@@ -200,7 +200,7 @@ export function SoundPicker({ selectedSound, customSound, onSoundChange }: Sound
                 className={`flex-1 ${selectedSound === "custom" ? "border-black bg-gray-100" : ""}`}
               >
                 <span className="mr-2">🎤</span>
-                {hasCustomRecording ? "Record New" : "Record Sound"}
+                {hasCustomRecording ? "Optag Ny" : "Optag Lyd"}
               </Button>
               
               {/* Play custom recording button */}
@@ -211,7 +211,7 @@ export function SoundPicker({ selectedSound, customSound, onSoundChange }: Sound
                   className={selectedSound === "custom" ? "bg-black text-white" : ""}
                 >
                   <span className="mr-2">▶️</span>
-                  Play
+                  Afspil
                 </Button>
               )}
             </div>
@@ -224,7 +224,7 @@ export function SoundPicker({ selectedSound, customSound, onSoundChange }: Sound
                   style={{ width: `${recordingProgress * 100}%` }}
                 />
                 <span className="relative text-white font-bold flex items-center gap-2">
-                  <span className="animate-pulse">●</span> Recording...
+                  <span className="animate-pulse">●</span> Optager...
                 </span>
               </div>
               <Button
@@ -232,7 +232,7 @@ export function SoundPicker({ selectedSound, customSound, onSoundChange }: Sound
                 variant="outline"
                 className="w-full"
               >
-                Stop Early
+                Stop Tidligt
               </Button>
             </div>
           )}
@@ -245,7 +245,7 @@ export function SoundPicker({ selectedSound, customSound, onSoundChange }: Sound
           {/* Custom sound indicator */}
           {hasCustomRecording && selectedSound === "custom" && (
             <p className="text-green-600 text-sm mt-2 flex items-center gap-1">
-              <span>✓</span> Custom sound selected
+              <span>✓</span> Brugerdefineret lyd valgt
             </p>
           )}
         </div>
@@ -253,9 +253,9 @@ export function SoundPicker({ selectedSound, customSound, onSoundChange }: Sound
         {/* Current selection indicator */}
         <div className="pt-2 border-t border-gray-200 text-center">
           <p className="text-sm text-gray-500">
-            Selected: <span className="font-medium text-black">
+            Valgt: <span className="font-medium text-black">
               {selectedSound === "custom" 
-                ? "Custom Recording" 
+                ? "Brugerdefineret Optagelse" 
                 : PRESET_SOUNDS[selectedSound as PresetSoundName]?.name || "Buzzer"
               }
             </span>

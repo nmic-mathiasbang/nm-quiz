@@ -18,11 +18,11 @@ export function Scoreboard({ teams, highlightTeamId }: ScoreboardProps) {
   return (
     <Card className="bg-white border-gray-200">
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-bold text-black">Scoreboard</CardTitle>
+        <CardTitle className="text-lg font-bold text-black">Pointtavle</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
         {sortedTeams.length === 0 ? (
-          <p className="text-gray-500 text-sm">No teams yet</p>
+          <p className="text-gray-500 text-sm">Ingen hold endnu</p>
         ) : (
           sortedTeams.map((team, index) => (
             <div
@@ -59,7 +59,7 @@ export function Scoreboard({ teams, highlightTeamId }: ScoreboardProps) {
               
               {/* Score */}
               <span className={`font-bold text-lg ${team.score < 0 ? 'text-red-600' : 'text-black'}`}>
-                ${team.score}
+                {team.score} kr.
               </span>
             </div>
           ))

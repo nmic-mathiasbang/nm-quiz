@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 
 // Metadata for the app
 export const metadata: Metadata = {
-  title: "Jeopardy! LAN Game",
-  description: "A real-time Jeopardy quiz game for teams on your local network",
+  title: "Jeopardy! Quiz Spil",
+  description: "Et realtids Jeopardy quiz spil for hold",
 };
 
 // Viewport configuration for mobile devices
@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="da">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
