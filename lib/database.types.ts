@@ -37,6 +37,7 @@ export interface Team {
   connected: boolean;
   sound_type: string;        // Preset name or 'custom'
   custom_sound: string | null; // Base64 audio data for custom recordings
+  ready: boolean;            // Whether team is ready to start
 }
 
 export interface Game {
@@ -67,6 +68,7 @@ export interface TeamRow {
   connected: boolean;
   sound_type: string;
   custom_sound: string | null;
+  ready: boolean;
   created_at: string;
 }
 

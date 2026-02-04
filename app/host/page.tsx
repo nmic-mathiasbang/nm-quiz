@@ -296,7 +296,7 @@ export default function HostPage() {
           <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             <ConnectionInfo gameId={gameId!} />
             <div className="space-y-4">
-              <TeamList teams={teams} />
+              <TeamList teams={teams} showReadyStatus={true} />
               <HostControls
                 teams={teams}
                 isGameStarted={game.is_started}

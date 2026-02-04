@@ -7,6 +7,7 @@ import type { Game, Team } from "@/lib/database.types";
 import { BuzzerButton } from "@/components/buzzer-button";
 import { SoundPicker } from "@/components/sound-picker";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 // Inner component that uses useSearchParams
 function PlayContent() {
@@ -147,6 +148,22 @@ function PlayContent() {
     setTeam((prev) => prev ? { ...prev, sound_type: soundType, custom_sound: customSound } : prev);
   }, [teamId]);
 
+  // Handle ready toggle
+  const handleReadyToggle = useCallback(async () => {
+    if (!teamId || !team) return;
+
+    const newReadyState = !team.ready;
+
+    // Update ready status in Supabase
+    await supabase
+      .from("teams")
+      .update({ ready: newReadyState })
+      .eq("id", teamId);
+
+    // Update local state
+    setTeam((prev) => prev ? { ...prev, ready: newReadyState } : prev);
+  }, [teamId, team]);
+
   // Handle buzz (sound plays on host, not here)
   const handleBuzz = useCallback(async () => {
     if (!game || !game.active_question || hasBuzzed || game.active_question.buzzerLocked) {
@@ -202,25 +219,52 @@ function PlayContent() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col items-center justify-center p-4 overflow-auto">
-        {/* Waiting for game to start - show sound picker */}
+        {/* Waiting for game to start - show sound picker and ready button */}
         {!game?.is_started && (
           <div className="w-full max-w-md space-y-4">
-            <Card className="bg-gray-50 border-gray-200">
-              <CardContent className="py-6 text-center">
-                <div className="animate-pulse mb-3">
-                  <div className="w-12 h-12 bg-gray-300 rounded-full mx-auto" />
-                </div>
-                <p className="text-lg text-gray-600">Waiting for host to start...</p>
-                <p className="text-sm text-gray-400 mt-1">Customize your buzzer sound below!</p>
+            {/* Ready status card */}
+            <Card className={`border-2 transition-all ${team?.ready ? "bg-green-50 border-green-500" : "bg-gray-50 border-gray-200"}`}>
+              <CardContent className="py-6 text-center space-y-4">
+                {team?.ready ? (
+                  <>
+                    <div className="w-16 h-16 bg-green-500 rounded-full mx-auto flex items-center justify-center">
+                      <span className="text-3xl text-white">✓</span>
+                    </div>
+                    <p className="text-lg font-bold text-green-700">You&apos;re Ready!</p>
+                    <p className="text-sm text-green-600">Waiting for host to start the game...</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="animate-pulse mb-2">
+                      <div className="w-12 h-12 bg-gray-300 rounded-full mx-auto" />
+                    </div>
+                    <p className="text-lg text-gray-600">Customize your buzzer sound below</p>
+                    <p className="text-sm text-gray-400">Then click Ready when you&apos;re set!</p>
+                  </>
+                )}
+                
+                {/* Ready/Not Ready button */}
+                <Button
+                  onClick={handleReadyToggle}
+                  className={`w-full h-14 text-lg font-bold transition-all ${
+                    team?.ready 
+                      ? "bg-gray-500 hover:bg-gray-600 text-white" 
+                      : "bg-green-600 hover:bg-green-700 text-white"
+                  }`}
+                >
+                  {team?.ready ? "Cancel Ready" : "I'm Ready!"}
+                </Button>
               </CardContent>
             </Card>
             
-            {/* Sound picker */}
-            <SoundPicker
-              selectedSound={team?.sound_type || "buzzer"}
-              customSound={team?.custom_sound || null}
-              onSoundChange={handleSoundChange}
-            />
+            {/* Sound picker - only show when not ready */}
+            {!team?.ready && (
+              <SoundPicker
+                selectedSound={team?.sound_type || "buzzer"}
+                customSound={team?.custom_sound || null}
+                onSoundChange={handleSoundChange}
+              />
+            )}
           </div>
         )}
 

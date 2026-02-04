@@ -19,6 +19,26 @@ export function HostControls({
   onStartGame,
   onAwardPoints,
 }: HostControlsProps) {
+  // Check if all teams are ready
+  const allTeamsReady = teams.length > 0 && teams.every(t => t.ready);
+  const readyCount = teams.filter(t => t.ready).length;
+
+  // Determine button state and message
+  const getStartButtonState = () => {
+    if (teams.length < 1) {
+      return { disabled: true, message: "Waiting for teams..." };
+    }
+    if (!allTeamsReady) {
+      return { 
+        disabled: true, 
+        message: `Waiting for ${teams.length - readyCount} team${teams.length - readyCount !== 1 ? "s" : ""} to ready up` 
+      };
+    }
+    return { disabled: false, message: "Start Game" };
+  };
+
+  const buttonState = getStartButtonState();
+
   return (
     <Card className="bg-white border-gray-200">
       <CardHeader className="pb-3">
@@ -29,13 +49,14 @@ export function HostControls({
         {!isGameStarted && (
           <Button
             onClick={onStartGame}
-            disabled={teams.length < 1}
-            className="w-full bg-black text-white hover:bg-gray-800"
+            disabled={buttonState.disabled}
+            className={`w-full ${
+              allTeamsReady 
+                ? "bg-green-600 hover:bg-green-700 text-white" 
+                : "bg-gray-400 text-white"
+            }`}
           >
-            {teams.length < 1 
-              ? 'Waiting for teams...' 
-              : 'Start Game'
-            }
+            {buttonState.message}
           </Button>
         )}
 

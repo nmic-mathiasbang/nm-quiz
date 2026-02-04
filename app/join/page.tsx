@@ -82,6 +82,7 @@ function JoinForm() {
         connected: true,
         sound_type: "buzzer",    // Default buzzer sound
         custom_sound: null,
+        ready: false,            // Not ready until they click ready
       });
 
       if (insertError) {
