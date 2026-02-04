@@ -1,92 +1,4 @@
-// Database types for Supabase tables
-
-export interface Database {
-  public: {
-    Tables: {
-      games: {
-        Row: {
-          id: string;
-          host_id: string;
-          is_started: boolean;
-          categories: Category[];
-          active_question: ActiveQuestion | null;
-          show_answer: boolean;
-          created_at: string;
-        };
-        Insert: {
-          id: string;
-          host_id: string;
-          is_started?: boolean;
-          categories?: Category[];
-          active_question?: ActiveQuestion | null;
-          show_answer?: boolean;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          host_id?: string;
-          is_started?: boolean;
-          categories?: Category[];
-          active_question?: ActiveQuestion | null;
-          show_answer?: boolean;
-          created_at?: string;
-        };
-      };
-      teams: {
-        Row: {
-          id: string;
-          game_id: string;
-          name: string;
-          score: number;
-          connected: boolean;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          game_id: string;
-          name: string;
-          score?: number;
-          connected?: boolean;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          game_id?: string;
-          name?: string;
-          score?: number;
-          connected?: boolean;
-          created_at?: string;
-        };
-      };
-      buzzes: {
-        Row: {
-          id: number;
-          game_id: string;
-          team_id: string;
-          team_name: string;
-          timestamp: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: number;
-          game_id: string;
-          team_id: string;
-          team_name: string;
-          timestamp: number;
-          created_at?: string;
-        };
-        Update: {
-          id?: number;
-          game_id?: string;
-          team_id?: string;
-          team_name?: string;
-          timestamp?: number;
-          created_at?: string;
-        };
-      };
-    };
-  };
-}
+// Database types for the Jeopardy game
 
 // Game types
 export interface Question {
@@ -132,4 +44,33 @@ export interface Game {
   categories: Category[];
   active_question: ActiveQuestion | null;
   show_answer: boolean;
+}
+
+// Database row types (for Supabase queries)
+export interface GameRow {
+  id: string;
+  host_id: string;
+  is_started: boolean;
+  categories: Category[];
+  active_question: ActiveQuestion | null;
+  show_answer: boolean;
+  created_at: string;
+}
+
+export interface TeamRow {
+  id: string;
+  game_id: string;
+  name: string;
+  score: number;
+  connected: boolean;
+  created_at: string;
+}
+
+export interface BuzzRow {
+  id: number;
+  game_id: string;
+  team_id: string;
+  team_name: string;
+  timestamp: number;
+  created_at: string;
 }

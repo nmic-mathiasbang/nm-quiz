@@ -1,13 +1,12 @@
 // Supabase client configuration
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from './database.types';
 
 // Supabase URL and anon key from environment variables
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-// Create Supabase client with realtime enabled
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+// Create Supabase client with realtime enabled (without strict typing for flexibility)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   realtime: {
     params: {
       eventsPerSecond: 10,
