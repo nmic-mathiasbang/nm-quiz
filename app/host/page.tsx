@@ -24,10 +24,38 @@ export default function HostPage() {
   const [buzzedTeamId, setBuzzedTeamId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize game on mount
+  // Initialize game on mount - check for existing session first
   useEffect(() => {
     const initGame = async () => {
-      // Generate unique IDs
+      // Check for existing game session in sessionStorage
+      const storedGameId = sessionStorage.getItem("hostGameId");
+      const storedHostId = sessionStorage.getItem("hostId");
+
+      if (storedGameId && storedHostId) {
+        // Try to load existing game from Supabase
+        const { data: existingGame, error: loadError } = await supabase
+          .from("games")
+          .select("*")
+          .eq("id", storedGameId)
+          .single();
+
+        if (existingGame && !loadError) {
+          console.log("Restored existing game:", storedGameId);
+          setGameId(storedGameId);
+          setHostId(storedHostId);
+          setGame(existingGame as Game);
+          setShowAnswer(existingGame.show_answer);
+          setIsLoading(false);
+          return;
+        } else {
+          // Game not found, clear stale session
+          console.log("Stale game session, creating new game");
+          sessionStorage.removeItem("hostGameId");
+          sessionStorage.removeItem("hostId");
+        }
+      }
+
+      // No existing game, create a new one
       const newGameId = generateGameCode();
       const newHostId = generateTeamId();
       
@@ -51,6 +79,10 @@ export default function HostPage() {
         console.error("Failed to create game:", error);
         return;
       }
+
+      // Store in sessionStorage for page refresh persistence
+      sessionStorage.setItem("hostGameId", newGameId);
+      sessionStorage.setItem("hostId", newHostId);
 
       setGameId(newGameId);
       setHostId(newHostId);
@@ -270,6 +302,23 @@ export default function HostPage() {
     setBuzzedTeamId(null);
   }, [game, gameId]);
 
+  // End game and start fresh
+  const handleEndGame = useCallback(async () => {
+    // Clear session storage
+    sessionStorage.removeItem("hostGameId");
+    sessionStorage.removeItem("hostId");
+
+    // Optionally delete the game from Supabase (cleanup)
+    if (gameId) {
+      await supabase.from("buzzes").delete().eq("game_id", gameId);
+      await supabase.from("teams").delete().eq("game_id", gameId);
+      await supabase.from("games").delete().eq("id", gameId);
+    }
+
+    // Reload the page to start fresh
+    window.location.reload();
+  }, [gameId]);
+
   // Loading state
   if (isLoading || !game) {
     return (
@@ -303,6 +352,7 @@ export default function HostPage() {
                 isGameStarted={game.is_started}
                 onStartGame={handleStartGame}
                 onAwardPoints={handleAwardPoints}
+                onEndGame={handleEndGame}
               />
             </div>
           </div>
@@ -331,6 +381,7 @@ export default function HostPage() {
           isGameStarted={game.is_started}
           onStartGame={handleStartGame}
           onAwardPoints={handleAwardPoints}
+          onEndGame={handleEndGame}
         />
       </div>
 

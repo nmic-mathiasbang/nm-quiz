@@ -10,6 +10,7 @@ interface HostControlsProps {
   isGameStarted: boolean;
   onStartGame: () => void;
   onAwardPoints: (teamId: string, points: number) => void;
+  onEndGame?: () => void;  // Optional end game handler
 }
 
 // Host control panel for managing the game
@@ -18,6 +19,7 @@ export function HostControls({
   isGameStarted,
   onStartGame,
   onAwardPoints,
+  onEndGame,
 }: HostControlsProps) {
   // Check if all teams are ready
   const allTeamsReady = teams.length > 0 && teams.every(t => t.ready);
@@ -88,6 +90,17 @@ export function HostControls({
               </div>
             ))}
           </div>
+        )}
+
+        {/* End game button */}
+        {onEndGame && (
+          <Button
+            onClick={onEndGame}
+            variant="outline"
+            className="w-full border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700"
+          >
+            End Game
+          </Button>
         )}
       </CardContent>
     </Card>
