@@ -125,13 +125,13 @@ export function QuestionModal({
                 {question.isBonus && stakingTeam && (
                   <div className="flex gap-3">
                     <Button
-                      onClick={() => onAwardPoints(stakingTeam.id, pointValue)}
+                      onClick={() => { onAwardPoints(stakingTeam.id, pointValue); onClose(true); }}
                       className="flex-1 h-14 text-xl bg-green-600 text-white hover:bg-green-700"
                     >
                       Korrekt (+{pointValue} kr.)
                     </Button>
                     <Button
-                      onClick={() => onAwardPoints(stakingTeam.id, -pointValue)}
+                      onClick={() => { onAwardPoints(stakingTeam.id, -pointValue); onClose(true); }}
                       variant="destructive"
                       className="flex-1 h-14 text-xl"
                     >
@@ -150,14 +150,14 @@ export function QuestionModal({
                           {team.name} {buzzedTeam?.id === team.id && "🔔"}
                         </span>
                         <Button
-                          onClick={() => onAwardPoints(team.id, pointValue)}
+                          onClick={() => { onAwardPoints(team.id, pointValue); onClose(true); }}
                           size="sm"
                           className="bg-green-600 text-white hover:bg-green-700"
                         >
                           +{pointValue} kr.
                         </Button>
                         <Button
-                          onClick={() => onAwardPoints(team.id, -pointValue)}
+                          onClick={() => { onAwardPoints(team.id, -pointValue); onClose(true); }}
                           size="sm"
                           variant="destructive"
                         >
@@ -167,28 +167,16 @@ export function QuestionModal({
                     ))}
                   </div>
                 )}
+
+                {/* Close without awarding points */}
+                <Button
+                  onClick={() => onClose(true)}
+                  variant="outline"
+                  className="w-full h-10 text-sm border-gray-300 text-gray-600 hover:bg-gray-100"
+                >
+                  Luk uden point
+                </Button>
               </div>
-            )}
-
-            {/* Reset buzzer button - only for regular questions before answer is revealed */}
-            {!question.isBonus && question.buzzerLocked && !showAnswer && (
-              <Button
-                onClick={onResetBuzzer}
-                variant="outline"
-                className="w-full h-12 text-lg border-gray-300 text-black hover:bg-gray-100"
-              >
-                Nulstil Buzzer (Lad et andet hold prøve)
-              </Button>
-            )}
-
-            {/* Close and mark as done - only if answer was revealed */}
-            {showAnswer && (
-              <Button
-                onClick={() => onClose(true)}
-                className={`w-full h-12 text-lg ${question.isBonus ? "bg-orange-600 hover:bg-orange-700" : "bg-blue-600 hover:bg-blue-700"} text-white`}
-              >
-                Færdig - Fjern fra Bræt
-              </Button>
             )}
           </div>
         </div>
