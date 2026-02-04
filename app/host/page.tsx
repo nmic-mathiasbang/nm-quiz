@@ -274,14 +274,18 @@ export default function HostPage() {
     setBuzzedTeamId(null);
   }, [game, gameId]);
 
-  const handleCloseQuestion = useCallback(async () => {
+  // Close question - only mark as used if markAsUsed is true (answer was revealed)
+  const handleCloseQuestion = useCallback(async (markAsUsed: boolean) => {
     if (!game || !gameId || !game.active_question) return;
 
     const { categoryIndex, questionIndex } = game.active_question;
 
-    // Mark question as used
-    const updatedCategories = [...game.categories];
-    updatedCategories[categoryIndex].questions[questionIndex].used = true;
+    // Only mark question as used if answer was revealed
+    let updatedCategories = game.categories;
+    if (markAsUsed) {
+      updatedCategories = [...game.categories];
+      updatedCategories[categoryIndex].questions[questionIndex].used = true;
+    }
 
     await supabase
       .from("games")
