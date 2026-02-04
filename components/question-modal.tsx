@@ -118,46 +118,60 @@ export function QuestionModal({
               </Button>
             )}
 
-            {/* Scoring controls for bonus questions (staking team) */}
-            {question.isBonus && stakingTeam && (
-              <div className="flex gap-3">
-                <Button
-                  onClick={() => onAwardPoints(stakingTeam.id, pointValue)}
-                  className="flex-1 h-14 text-xl bg-green-600 text-white hover:bg-green-700"
-                >
-                  Korrekt (+{pointValue} kr.)
-                </Button>
-                <Button
-                  onClick={() => onAwardPoints(stakingTeam.id, -pointValue)}
-                  variant="destructive"
-                  className="flex-1 h-14 text-xl"
-                >
-                  Forkert (-{pointValue} kr.)
-                </Button>
+            {/* Scoring controls - show after answer is revealed */}
+            {showAnswer && (
+              <div className="space-y-3">
+                {/* For bonus questions - award to staking team */}
+                {question.isBonus && stakingTeam && (
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => onAwardPoints(stakingTeam.id, pointValue)}
+                      className="flex-1 h-14 text-xl bg-green-600 text-white hover:bg-green-700"
+                    >
+                      Korrekt (+{pointValue} kr.)
+                    </Button>
+                    <Button
+                      onClick={() => onAwardPoints(stakingTeam.id, -pointValue)}
+                      variant="destructive"
+                      className="flex-1 h-14 text-xl"
+                    >
+                      Forkert (-{pointValue} kr.)
+                    </Button>
+                  </div>
+                )}
+
+                {/* For regular questions - show buttons for each team */}
+                {!question.isBonus && teams.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-600 text-center">Tildel point til hold:</p>
+                    {teams.map((team) => (
+                      <div key={team.id} className="flex items-center gap-2">
+                        <span className={`flex-1 text-lg font-medium ${buzzedTeam?.id === team.id ? "text-red-600" : "text-black"}`}>
+                          {team.name} {buzzedTeam?.id === team.id && "🔔"}
+                        </span>
+                        <Button
+                          onClick={() => onAwardPoints(team.id, pointValue)}
+                          size="sm"
+                          className="bg-green-600 text-white hover:bg-green-700"
+                        >
+                          +{pointValue} kr.
+                        </Button>
+                        <Button
+                          onClick={() => onAwardPoints(team.id, -pointValue)}
+                          size="sm"
+                          variant="destructive"
+                        >
+                          -{pointValue} kr.
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Scoring controls for regular questions (buzzed team) */}
-            {!question.isBonus && buzzedTeam && (
-              <div className="flex gap-3">
-                <Button
-                  onClick={() => onAwardPoints(buzzedTeam.id, pointValue)}
-                  className="flex-1 h-14 text-xl bg-green-600 text-white hover:bg-green-700"
-                >
-                  Korrekt (+{pointValue} kr.)
-                </Button>
-                <Button
-                  onClick={() => onAwardPoints(buzzedTeam.id, -pointValue)}
-                  variant="destructive"
-                  className="flex-1 h-14 text-xl"
-                >
-                  Forkert (-{pointValue} kr.)
-                </Button>
-              </div>
-            )}
-
-            {/* Reset buzzer button - only for regular questions */}
-            {!question.isBonus && question.buzzerLocked && (
+            {/* Reset buzzer button - only for regular questions before answer is revealed */}
+            {!question.isBonus && question.buzzerLocked && !showAnswer && (
               <Button
                 onClick={onResetBuzzer}
                 variant="outline"
