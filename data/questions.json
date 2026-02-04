@@ -1,0 +1,64 @@
+{
+  "categories": [
+    {
+      "name": "Science",
+      "questions": [
+        { "value": 100, "question": "This planet is known as the Red Planet", "answer": "What is Mars?" },
+        { "value": 200, "question": "This element has the chemical symbol 'O'", "answer": "What is Oxygen?" },
+        { "value": 300, "question": "This force keeps us on the ground", "answer": "What is Gravity?" },
+        { "value": 400, "question": "This scientist developed the theory of relativity", "answer": "Who is Albert Einstein?" },
+        { "value": 500, "question": "This is the powerhouse of the cell", "answer": "What is the Mitochondria?" }
+      ]
+    },
+    {
+      "name": "History",
+      "questions": [
+        { "value": 100, "question": "This ship sank on its maiden voyage in 1912", "answer": "What is the Titanic?" },
+        { "value": 200, "question": "This ancient wonder was located in Giza, Egypt", "answer": "What are the Pyramids?" },
+        { "value": 300, "question": "This wall fell in 1989, reuniting Germany", "answer": "What is the Berlin Wall?" },
+        { "value": 400, "question": "This explorer is credited with discovering America in 1492", "answer": "Who is Christopher Columbus?" },
+        { "value": 500, "question": "This war lasted from 1939 to 1945", "answer": "What is World War II?" }
+      ]
+    },
+    {
+      "name": "Geography",
+      "questions": [
+        { "value": 100, "question": "This is the largest ocean on Earth", "answer": "What is the Pacific Ocean?" },
+        { "value": 200, "question": "This is the capital city of France", "answer": "What is Paris?" },
+        { "value": 300, "question": "This is the longest river in the world", "answer": "What is the Nile?" },
+        { "value": 400, "question": "This country has the largest population in the world", "answer": "What is China?" },
+        { "value": 500, "question": "This desert is the largest hot desert in the world", "answer": "What is the Sahara?" }
+      ]
+    },
+    {
+      "name": "Sports",
+      "questions": [
+        { "value": 100, "question": "This sport uses a shuttlecock", "answer": "What is Badminton?" },
+        { "value": 200, "question": "This country won the first FIFA World Cup in 1930", "answer": "What is Uruguay?" },
+        { "value": 300, "question": "This tennis tournament is played on grass courts", "answer": "What is Wimbledon?" },
+        { "value": 400, "question": "This basketball player is known as 'His Airness'", "answer": "Who is Michael Jordan?" },
+        { "value": 500, "question": "This is the only sport to have been played on the Moon", "answer": "What is Golf?" }
+      ]
+    },
+    {
+      "name": "Movies",
+      "questions": [
+        { "value": 100, "question": "This movie features a shark terrorizing a beach town", "answer": "What is Jaws?" },
+        { "value": 200, "question": "This 1994 film stars Tom Hanks as a man on a bench", "answer": "What is Forrest Gump?" },
+        { "value": 300, "question": "This wizard lives at Hogwarts", "answer": "Who is Harry Potter?" },
+        { "value": 400, "question": "This director made Pulp Fiction and Kill Bill", "answer": "Who is Quentin Tarantino?" },
+        { "value": 500, "question": "This 1999 film revealed we live in a simulation", "answer": "What is The Matrix?" }
+      ]
+    },
+    {
+      "name": "Music",
+      "questions": [
+        { "value": 100, "question": "This band sang 'Bohemian Rhapsody'", "answer": "Who is Queen?" },
+        { "value": 200, "question": "This instrument has 88 keys", "answer": "What is a Piano?" },
+        { "value": 300, "question": "This 'King of Pop' performed Thriller", "answer": "Who is Michael Jackson?" },
+        { "value": 400, "question": "This Beatles album features a zebra crossing on its cover", "answer": "What is Abbey Road?" },
+        { "value": 500, "question": "This composer wrote the Ninth Symphony while deaf", "answer": "Who is Beethoven?" }
+      ]
+    }
+  ]
+}
